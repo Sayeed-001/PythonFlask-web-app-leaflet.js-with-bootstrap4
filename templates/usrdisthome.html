@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+	<!-- Calling leaflet map here on top of page -->
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-8 text-center bg-info border-left my-3">
+			<h4>International Space Station Live Tracker</h4>
+		</div>
+		
+		<div class="col-sm-12 col-md-4 my-2 border-right my-3">
+			<p class="card-block bg-info text-center" style="font-size:18;"><b>ISS Moving Stats:</b>
+			</p>
+		</div>
+	</div>	
+		
+	<div class="row">
+		
+		<div class="col-sm-12 col-md-8 border-left" id="issMap">
+		</div>
+		
+	<div class="col-sm-12 col-md-4 border-right">
+		<b>Satellite id: <span id="idd"></span></b><br />
+		<b>Latitude: <span id="lat"></span>&#176;</b><br />
+		<b>Longitude: <span id="lon"></span>&#176;</b><br />
+		<b>Altitude: <span id="alt"></span>&#176;</b><br />
+		<b>Speed(km/hr): <span id="vel"></span></b><br />
+		<b>Visibility: <span id="visi"></span></b><br /><br />
+
+		<form id="submit_para" method="POST", action="{{ url_for('usrdist') }}">
+			<p class="card-block bg-info text-center" style="font-size:18;"><b>How far ISS from your Location?</b></p>
+		<div class="form-group row my-2 px-4">
+			<label for="city" class="col-sm-4 col-form-label shadow font-weight-bold text-inf">Enter City/Country
+			</label>
+			<div class="col-sm-8 shadow">
+				<input name="city" type="text" class="form-control w-100 p-1" placeholder="city/country name">
+				<small id="MYHelp" class="form-text">Enter valid City/Country name. <b>Don't use ? . , > < </b></small>
+			</div>
+		</div>
+			<!-- <form id="submit_param" method="POST" action="{{ url_for('pasover') }}">
+	    	</form>  -->   
+			<input type="button" class="btn btn-dark btn-sm btn-block" 
+			onClick="document.getElementById('submit_para').submit();" value="Click to submit">
+		</form>
+		
+		<form id="submit_param2" method="POST" action="{{url_for('scientist_onboard') }}">
+		    	<p class="card-block bg-info text-center" style="font-size:18;"><b>Want to see Scientists Onboard ISS?</b></p>
+		    	Click to know..	
+	        <button type="button" class="btn btn-dark btn-sm" 
+	        	onClick="document.getElementById('submit_param2').submit();">Scientists Onboard ISS
+			</button>
+      </form>
+	</div>
+
+
+	<!-- <div id="mydiv" class="bg-info text-white my-2">
+	    <h5 class="text-center py-2">ISS Is Flying at Latitude/Longitude {{ latlongs }} over {{ adress }}
+	    </h5>
+	</div>
+ -->
+	<div class="card my-2 col-sm-12 my-3">
+		<div class="container">
+			<div class="row my-1 border">
+				<div class="col-sm-12 col-md-6">
+					<b>User Location:</b><br /> {{ citynames }}<br />
+					<b>User Lat/Lon:</b> {{ usr_lo }}
+				</div>
+
+				<div class="col-sm-12 col-md-6 border-right">
+					<b>ISS Location:</b><br /> {{ iss_address }}<br />
+					<b>ISS Lat/Lon:</b> {{ iss_lo }}
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-sm-12 col-md-12 my-1 card-block bg-dark text-white shadow text-center">
+					<p>Distance is {{ miless }} miles / {{ kilo }} kms approx.</p>  
+				</div>
+			</div>
+		</div>
+  		<div class="card-block bg-info text-center mx-3 my-2" style="font-family:Times New Roman;">
+  			<h4>International Space Station ISS Current location & Information</h4>
+  		</div>
+  			<ul class="border" style="font-family:Times New Roman; font-size: 18px">
+  			<li>The ISS programme is a joint project between five participating space agencies: NASA (United States), Roscosmos (Russia), JAXA (Japan), ESA (Europe), and CSA (Canada). The ownership and use of the space station is established by intergovernmental treaties and agreements.</li>
+
+    		<li>The ISS serves as a microgravity and space environment research laboratory in which crew members conduct experiments in biology, physics, astronomy, and other fields.</li>
+			<li>This is all from Wikipedia. <b><a href="https://en.wikipedia.org/wiki/International_Space_Station">See Also..</a></b></li></ul>
+
+			
+		</div>
+	</div>
+</div></div>
+
+{% endblock %}

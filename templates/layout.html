@@ -1,0 +1,97 @@
+<html lang='en'>
+	<head>
+	    <meta charset='UTF-8'>
+	    <title>The Pocket ISS Locator</title>
+	    <!-- <meta name="viewport" content="width-device-width, initial_scale=1"> -->
+	   <!--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->	    
+	    <link rel="stylesheet" 
+				href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+		<script src= "https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script>
+
+	    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+	   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="crossorigin=""/>
+	    <!-- Make sure you put this AFTER Leaflet's CSS -->
+		<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" 
+	integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="crossorigin=""></script>
+	
+	<style>
+
+		#issMap {
+			
+			height:430px;
+			margin-top:7px;
+		}
+
+	</style> 		
+	</head>
+	
+	<body style="background-color:lightgrey;">
+		<img src="static/images/iss_bannercrop.jpg" class="img-fluid" alt="Responsive image" 
+		style="width:100%; height:55%;">
+		
+			{% include 'includes/_navbar.html' %}
+			{% block body %}{% endblock %}
+		
+
+		<div class="footer-copyright bg-dark text-white text-center"><b>© 2020 Copyright:ISS Live Locator</b>
+	</div>
+
+<!-- 
+	# Interactive map on homepage -->
+		<script>
+		const mymap = L.map('issMap').setView([0, 0], 1);
+
+		const attribution = 
+		'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+
+		const tileurl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+		const tiles = L.tileLayer(tileurl, { attribution });
+
+		tiles.addTo(mymap);
+		
+		const issIcon = L.icon({
+					    iconUrl: 'static//images//iss.png',
+					    iconSize: [70, 38],
+					    iconAnchor: [25, 16]
+					    // popupAnchor: [-3, -76],
+					    // shadowUrl: 'iss-sm.png',
+					    // shadowSize: [68, 95],
+					    // shadowAnchor: [22, 94]
+							});
+
+		const marker = L.marker([0,0], { icon: issIcon}).addTo(mymap);
+
+		const api_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+		// const api_url = 'http://api.open-notify.org/iss-now.json';
+		let firstTime = true;
+
+		async function getISS() {
+			const response = await fetch(api_url);
+			const data = await response.json();
+			const { id, latitude, longitude, altitude, velocity, visibility } = data;
+
+			marker.setLatLng([latitude, longitude]);
+			if (firstTime) {
+				mymap.setView([latitude, longitude], 3);
+				firstTime = false;
+			};
+			document.getElementById('lat').textContent = latitude.toFixed(2);
+			document.getElementById('lon').textContent = longitude.toFixed(2);
+			document.getElementById('alt').textContent = altitude.toFixed(2);
+			document.getElementById('vel').textContent = velocity.toFixed(2);
+			document.getElementById('visi').textContent = visibility;
+			document.getElementById('idd').textContent = id;
+		};
+
+		getISS();
+
+		setInterval(getISS, 2000);
+		
+</script>
+
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+	</body>
+</html>
